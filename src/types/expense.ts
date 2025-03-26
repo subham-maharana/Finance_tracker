@@ -24,6 +24,13 @@ export interface ExpenseFormData {
   category: ExpenseCategory;
 }
 
+export interface ExpenseFormInput {
+  name: string;
+  amount: string | number;
+  date: Date;
+  category: ExpenseCategory;
+}
+
 export interface CategoryTotal {
   category: ExpenseCategory;
   total: number;
