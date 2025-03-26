@@ -1,4 +1,4 @@
-
+import React, { useState } from "react";
 import { Expense, ExpenseCategory } from "@/types/expense";
 import { format } from "date-fns";
 import { Edit, Trash, Filter, ArrowUpDown, Download } from "lucide-react";
@@ -13,7 +13,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -61,16 +60,13 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
     direction: null,
   });
 
-  // Update filtered expenses when expenses or filters change
   React.useEffect(() => {
     let result = [...expenses];
     
-    // Filter by category
     if (filters.category) {
       result = result.filter((expense) => expense.category === filters.category);
     }
     
-    // Filter by amount range
     if (filters.minAmount) {
       result = result.filter((expense) => expense.amount >= Number(filters.minAmount));
     }
@@ -79,7 +75,6 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
       result = result.filter((expense) => expense.amount <= Number(filters.maxAmount));
     }
     
-    // Filter by date range
     if (filters.startDate) {
       const startDate = new Date(filters.startDate);
       result = result.filter((expense) => expense.date >= startDate);
@@ -90,7 +85,6 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
       result = result.filter((expense) => expense.date <= endDate);
     }
     
-    // Filter by search term
     if (filters.searchTerm) {
       const term = filters.searchTerm.toLowerCase();
       result = result.filter((expense) => 
@@ -99,7 +93,6 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
       );
     }
     
-    // Apply sorting
     if (sortConfig.key && sortConfig.direction) {
       result.sort((a, b) => {
         if (a[sortConfig.key!] < b[sortConfig.key!]) {

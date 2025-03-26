@@ -100,7 +100,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   }, [editingExpense, form]);
 
   const handleSubmit = (data: z.infer<typeof expenseFormSchema>) => {
-    onSubmit(data);
+    onSubmit(data as ExpenseFormData);
     onOpenChange(false);
   };
 
