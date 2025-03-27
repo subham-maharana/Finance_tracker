@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
@@ -9,33 +9,59 @@ import ExpenseTable from "@/components/ExpenseTable";
 import ExpenseChart from "@/components/ExpenseChart";
 import AddExpenseModal from "@/components/AddExpenseModal";
 import { Expense, ExpenseFormData } from "@/types/expense";
+import { useExpenseSync } from "@/hooks/useExpenseSync";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  
+  // Use the expense sync hook
+  const { addExpense, updateExpense, deleteExpense } = useExpenseSync(expenses, setExpenses);
+  
+  // Redirect to auth page if not logged in
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth");
+    }
+  }, [user, loading, navigate]);
 
-  const handleAddExpense = (data: ExpenseFormData) => {
+  const handleAddExpense = async (data: ExpenseFormData) => {
     if (editingExpense) {
       // Update existing expense
-      const updatedExpenses = expenses.map((expense) =>
-        expense.id === editingExpense.id
-          ? { ...expense, ...data }
-          : expense
-      );
-      setExpenses(updatedExpenses);
-      toast.success("Expense updated successfully");
-    } else {
-      // Add new expense
-      const newExpense: Expense = {
-        id: uuidv4(),
+      const updatedExpense = {
+        ...editingExpense,
         ...data,
       };
-      setExpenses([...expenses, newExpense]);
-      toast.success("Expense added successfully");
+      
+      const success = await updateExpense(updatedExpense);
+      if (success) {
+        const updatedExpenses = expenses.map((expense) =>
+          expense.id === editingExpense.id ? updatedExpense : expense
+        );
+        setExpenses(updatedExpenses);
+        toast.success("Expense updated successfully");
+      }
+    } else {
+      // Add new expense
+      const newExpenseId = await addExpense(data);
+      
+      if (newExpenseId) {
+        const newExpense: Expense = {
+          id: newExpenseId,
+          ...data,
+        };
+        setExpenses([...expenses, newExpense]);
+        toast.success("Expense added successfully");
+      }
     }
 
     setEditingExpense(null);
+    setIsAddModalOpen(false);
   };
 
   const handleEditExpense = (expense: Expense) => {
@@ -43,10 +69,24 @@ const Index = () => {
     setIsAddModalOpen(true);
   };
 
-  const handleDeleteExpense = (id: string) => {
-    setExpenses(expenses.filter((expense) => expense.id !== id));
-    toast.success("Expense deleted successfully");
+  const handleDeleteExpense = async (id: string) => {
+    const success = await deleteExpense(id);
+    
+    if (success) {
+      setExpenses(expenses.filter((expense) => expense.id !== id));
+      toast.success("Expense deleted successfully");
+    }
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center h-64">
+          <p>Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
