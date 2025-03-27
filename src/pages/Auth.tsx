@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -7,19 +7,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
 
 type AuthMode = "signIn" | "signUp";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [mode, setMode] = useState<AuthMode>("signIn");
-  const [loading, setLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
     email: "",
     password: ""
   });
+  
+  // Redirect to home if already logged in
+  useEffect(() => {
+    if (user && !loading) {
+      navigate("/");
+    }
+  }, [user, loading, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,7 +36,7 @@ const Auth = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
 
     try {
       if (mode === "signUp") {
@@ -44,8 +53,9 @@ const Auth = () => {
         });
 
         if (error) throw error;
-        toast.success("Sign up successful! You can now sign in.");
-        setMode("signIn");
+        
+        toast.success("Sign up successful! Please check your email for confirmation link.");
+        toast.info("For testing: You may need to disable email verification in Supabase dashboard.");
       } else {
         // Sign in
         const { error } = await supabase.auth.signInWithPassword({
@@ -53,14 +63,25 @@ const Auth = () => {
           password: formData.password
         });
 
-        if (error) throw error;
+        if (error) {
+          if (error.message === "Email not confirmed") {
+            toast.error("Your email is not confirmed. Please check your inbox for the confirmation link or contact support.");
+          } else if (error.message === "Invalid login credentials") {
+            toast.error("Invalid email or password. Please try again.");
+          } else {
+            throw error;
+          }
+          return;
+        }
+
         toast.success("Signed in successfully!");
         navigate("/");
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred");
+      console.error("Auth error:", error);
+      toast.error(error.message || "An error occurred during authentication");
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
 
@@ -125,8 +146,8 @@ const Auth = () => {
               />
             </div>
             
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading 
+            <Button type="submit" className="w-full" disabled={formLoading}>
+              {formLoading 
                 ? "Loading..." 
                 : mode === "signIn" 
                   ? "Sign In" 
@@ -138,12 +159,19 @@ const Auth = () => {
             <button 
               onClick={() => setMode(mode === "signIn" ? "signUp" : "signIn")}
               className="text-blue-500 hover:underline"
+              type="button"
             >
               {mode === "signIn" 
                 ? "Don't have an account? Sign up" 
                 : "Already have an account? Sign in"}
             </button>
           </div>
+          
+          {mode === "signIn" && (
+            <div className="mt-3 text-center text-sm text-gray-500">
+              <p>If you've just signed up, please check your email to confirm your account.</p>
+            </div>
+          )}
         </div>
       </div>
     </Layout>
