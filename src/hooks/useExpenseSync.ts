@@ -5,6 +5,16 @@ import { Expense, ExpenseFormData, ExpenseCategory } from "@/types/expense";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 
+// Define a type for the expense record from the database
+interface ExpenseRecord {
+  id: string;
+  user_id: string;
+  name: string;
+  amount: string | number;
+  date: string;
+  category: string;
+}
+
 export const useExpenseSync = (
   expenses: Expense[],
   setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>
@@ -31,11 +41,11 @@ export const useExpenseSync = (
         }
 
         if (data) {
-          const formattedExpenses: Expense[] = data.map((expense) => ({
+          const formattedExpenses: Expense[] = data.map((expense: ExpenseRecord) => ({
             id: expense.id,
             name: expense.name,
-            amount: parseFloat(expense.amount),
-            date: expense.date,
+            amount: typeof expense.amount === 'string' ? parseFloat(expense.amount) : expense.amount,
+            date: new Date(expense.date),
             category: expense.category as ExpenseCategory
           }));
 
@@ -68,7 +78,7 @@ export const useExpenseSync = (
           amount: data.amount,
           date: data.date,
           category: data.category
-        })
+        } as any)
         .select()
         .single();
 
@@ -99,7 +109,7 @@ export const useExpenseSync = (
           amount: expense.amount,
           date: expense.date,
           category: expense.category
-        })
+        } as any)
         .eq("id", expense.id)
         .eq("user_id", user.id);
 
