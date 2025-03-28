@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,11 +10,14 @@ import { useAuth } from "@/context/AuthContext";
 import { Mail } from "lucide-react";
 
 type AuthMode = "signIn" | "signUp" | "resetPassword";
+type LocationState = { mode?: AuthMode } | null;
 
 const Auth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loading } = useAuth();
-  const [mode, setMode] = useState<AuthMode>("signIn");
+  const locationState = location.state as LocationState;
+  const [mode, setMode] = useState<AuthMode>(locationState?.mode || "signIn");
   const [formLoading, setFormLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",

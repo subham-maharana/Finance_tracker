@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   BarChart3, 
@@ -9,19 +9,38 @@ import {
   Check, 
   ArrowRight, 
   TrendingUp, 
-  ShieldCheck 
+  ShieldCheck,
+  LogIn,
+  UserPlus
 } from "lucide-react";
 
 const Landing = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-gray-50">
       {/* Navigation */}
       <header className="container mx-auto px-4 py-6">
         <div className="flex justify-between items-center">
           <div className="text-2xl font-bold text-primary">Expense Tracker</div>
-          <Link to="/auth">
-            <Button variant="outline" className="hover-scale">Sign In</Button>
-          </Link>
+          <div className="flex gap-3">
+            <Button 
+              variant="outline" 
+              className="hover-scale"
+              onClick={() => navigate("/auth", { state: { mode: "signIn" } })}
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              Sign In
+            </Button>
+            <Button 
+              variant="default" 
+              className="hover-scale"
+              onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
+            >
+              <UserPlus className="mr-2 h-4 w-4" />
+              Sign Up
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -39,12 +58,14 @@ const Landing = () => {
               Stay on top of your expenses effortlessly. Our smart expense tracker helps you manage your money like a pro!
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/auth">
-                <Button size="lg" className="hover-scale">
-                  Get Started for Free
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                className="hover-scale"
+                onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
+              >
+                Get Started for Free
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </div>
           </div>
           <div className="glass-card rounded-xl shadow-lg p-8 animate-fade-in">
@@ -189,12 +210,14 @@ const Landing = () => {
           <p className="text-lg text-muted-foreground mb-8">
             Join thousands of users who have transformed their financial habits with Expense Tracker.
           </p>
-          <Link to="/auth">
-            <Button size="lg" className="px-8 hover-scale">
-              Sign Up Now
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+          <Button 
+            size="lg" 
+            className="px-8 hover-scale"
+            onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
+          >
+            Sign Up Now
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       </section>
 
