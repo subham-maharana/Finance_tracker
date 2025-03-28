@@ -1,4 +1,3 @@
-
 import { ExpenseCategory } from "@/types/expense";
 
 export const getCategoryColor = (category: ExpenseCategory): string => {
@@ -32,14 +31,5 @@ export const getCategoryFillColor = (category: ExpenseCategory): string => {
 };
 
 export const getAllCategories = (): ExpenseCategory[] => {
-  return [
-    "Food",
-    "Transport",
-    "Entertainment",
-    "Utilities",
-    "Health",
-    "Shopping",
-    "Housing",
-    "Other"
-  ];
+  return ["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Housing", "Other"];
 };
