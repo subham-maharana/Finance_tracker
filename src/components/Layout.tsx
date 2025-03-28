@@ -23,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/auth");
+    navigate("/");
   };
 
   const getUserInitials = (name: string) => {
@@ -39,9 +39,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/" className="text-xl font-bold text-primary">
-            Expense Tracker
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-xl font-bold text-primary">
+              Expense Tracker
+            </Link>
+            {user && (
+              <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Dashboard
+              </Link>
+            )}
+          </div>
           <div className="flex items-center gap-4">
             {!loading && (
               <>
