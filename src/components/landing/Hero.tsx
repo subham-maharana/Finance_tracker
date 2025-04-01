@@ -3,9 +3,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <section className="container mx-auto px-4 py-16 md:py-24">
@@ -21,14 +23,25 @@ const Hero = () => {
             Stay on top of your expenses effortlessly. Our smart expense tracker helps you manage your money like a pro!
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-              size="lg" 
-              className="hover-scale"
-              onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
-            >
-              Get Started for Free
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            {user ? (
+              <Button 
+                size="lg" 
+                className="hover-scale"
+                onClick={() => navigate("/dashboard")}
+              >
+                Go to Dashboard
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : (
+              <Button 
+                size="lg" 
+                className="hover-scale"
+                onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
+              >
+                Get Started for Free
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
         <div className="glass-card rounded-xl shadow-lg p-8 animate-fade-in">
