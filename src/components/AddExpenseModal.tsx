@@ -62,6 +62,13 @@ interface AddExpenseModalProps {
   editingExpense: Expense | null;
 }
 
+const defaultValues = {
+  name: "",
+  amount: 0,
+  date: new Date(),
+  category: "Other" as ExpenseCategory,
+};
+
 const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   open,
   onOpenChange,
@@ -72,12 +79,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
 
   const form = useForm<z.infer<typeof expenseFormSchema>>({
     resolver: zodResolver(expenseFormSchema),
-    defaultValues: {
-      name: "",
-      amount: 0,
-      date: new Date(),
-      category: "Other" as ExpenseCategory,
-    },
+    defaultValues,
   });
 
   // Set form values when editing an expense
@@ -89,15 +91,23 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
         date: editingExpense.date,
         category: editingExpense.category,
       });
-    } else {
-      form.reset({
-        name: "",
-        amount: 0,
-        date: new Date(),
-        category: "Other" as ExpenseCategory,
-      });
+    } else if (open) {
+      // Only reset to default values when opening for a new entry
+      form.reset(defaultValues);
     }
-  }, [editingExpense, form]);
+  }, [editingExpense, form, open]);
+
+  // Clear form when modal is closed
+  useEffect(() => {
+    if (!open) {
+      // Add a small delay to avoid visual flicker during closing animation
+      const timer = setTimeout(() => {
+        form.reset(defaultValues);
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [open, form]);
 
   const handleSubmit = (data: z.infer<typeof expenseFormSchema>) => {
     onSubmit(data as ExpenseFormData);
