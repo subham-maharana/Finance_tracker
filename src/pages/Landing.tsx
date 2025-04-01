@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/landing/Header";
 import Hero from "@/components/landing/Hero";
 import Features from "@/components/landing/Features";
+import VideoSection from "@/components/landing/VideoSection";
+import Testimonials from "@/components/landing/Testimonials";
 import HowItWorks from "@/components/landing/HowItWorks";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
@@ -32,7 +34,9 @@ const Landing = () => {
       <Header />
       <Hero />
       <Features />
+      <VideoSection />
       <HowItWorks />
+      <Testimonials />
       <CTASection />
       <Footer />
     </div>

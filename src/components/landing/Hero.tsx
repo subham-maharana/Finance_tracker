@@ -33,15 +33,31 @@ const Hero = () => {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             ) : (
-              <Button 
-                size="lg" 
-                className="hover-scale"
-                onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
-              >
-                Get Started for Free
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              <>
+                <Button 
+                  size="lg" 
+                  className="hover-scale"
+                  onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
+                >
+                  Get Started for Free
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="hover-scale"
+                  onClick={() => document.getElementById('video-section')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Watch Demo
+                </Button>
+              </>
             )}
+          </div>
+          <div className="pt-4">
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
+              <span className="inline-block h-5 w-5 rounded-full bg-green-500 flex-shrink-0"></span>
+              No credit card required • Free plan available
+            </p>
           </div>
         </div>
         <div className="glass-card rounded-xl shadow-lg p-8 animate-fade-in">
