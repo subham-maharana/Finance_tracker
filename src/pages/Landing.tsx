@@ -24,13 +24,13 @@ const Landing = () => {
   
   // Show loading state while checking authentication
   if (loading) {
-    return <div className="min-h-screen bg-gradient-to-b from-background to-gray-50 flex items-center justify-center">
+    return <div className="min-h-screen bg-gradient-to-b from-background to-gray-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
       <p className="text-lg">Loading...</p>
     </div>;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-gray-50 dark:from-gray-900 dark:to-gray-800">
       <Header />
       <Hero />
       <Features />

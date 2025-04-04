@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -36,8 +37,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Link to="/" className="text-xl font-bold text-primary">
@@ -50,11 +51,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             )}
           </div>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             {!loading && (
               <>
                 {user ? (
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-gray-600 hidden sm:inline">
+                    <span className="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">
                       Welcome, {user.user_metadata.name || "User"}
                     </span>
                     

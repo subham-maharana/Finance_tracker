@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -35,7 +36,8 @@ const Header = () => {
     <header className="container mx-auto px-4 py-6">
       <div className="flex justify-between items-center">
         <div className="text-2xl font-bold text-primary">Expense Tracker</div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
+          <ThemeToggle />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
