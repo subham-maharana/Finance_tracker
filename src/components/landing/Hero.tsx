@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -60,14 +61,14 @@ const Hero = () => {
             </p>
           </div>
         </div>
-        <div className="glass-card rounded-xl shadow-lg p-8 animate-fade-in">
-          <div className="aspect-video bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+        <div className="glass-card rounded-xl shadow-lg p-6 animate-fade-in">
+          <AspectRatio ratio={16/9} className="overflow-hidden rounded-lg">
             <img 
               src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1000" 
               alt="Expense Tracker Dashboard" 
               className="w-full h-full object-cover"
             />
-          </div>
+          </AspectRatio>
         </div>
       </div>
     </section>
