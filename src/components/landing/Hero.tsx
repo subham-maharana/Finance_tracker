@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
@@ -47,9 +47,10 @@ const Hero = () => {
                   variant="outline" 
                   size="lg"
                   className="hover-scale"
-                  onClick={() => document.getElementById('video-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => navigate("/dashboard", { state: { demoMode: true } })}
                 >
-                  Watch Demo
+                  Try Demo
+                  <Play className="ml-2 h-4 w-4" />
                 </Button>
               </>
             )}

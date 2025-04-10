@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogIn, UserPlus, User } from "lucide-react";
+import { LogIn, UserPlus, User, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import {
   DropdownMenu,
@@ -23,6 +23,10 @@ const Header = () => {
     navigate("/");
   };
 
+  const handleDemo = () => {
+    navigate("/dashboard", { state: { demoMode: true } });
+  };
+
   const getUserInitials = (name: string) => {
     return name
       .split(' ')
@@ -38,6 +42,16 @@ const Header = () => {
         <div className="text-2xl font-bold text-primary">Expense Tracker</div>
         <div className="flex gap-3 items-center">
           <ThemeToggle />
+          
+          <Button 
+            variant="outline" 
+            className="hover-scale"
+            onClick={handleDemo}
+          >
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            Demo
+          </Button>
+          
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -71,24 +85,14 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <>
-              <Button 
-                variant="outline" 
-                className="hover-scale"
-                onClick={() => navigate("/auth", { state: { mode: "signIn" } })}
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
-              <Button 
-                variant="default" 
-                className="hover-scale"
-                onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
-              >
-                <UserPlus className="mr-2 h-4 w-4" />
-                Sign Up
-              </Button>
-            </>
+            <Button 
+              variant="default" 
+              className="hover-scale"
+              onClick={() => navigate("/auth", { state: { mode: "signIn" } })}
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              Sign In / Sign Up
+            </Button>
           )}
         </div>
       </div>

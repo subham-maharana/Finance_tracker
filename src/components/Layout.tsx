@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User } from "lucide-react";
+import { User, LayoutDashboard } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface LayoutProps {
@@ -21,6 +21,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isDemo = location.state?.demoMode;
 
   const handleSignOut = async () => {
     await signOut();
@@ -44,15 +46,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Link to="/" className="text-xl font-bold text-primary">
               Expense Tracker
             </Link>
-            {user && (
-              <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            {(user || isDemo) && (
+              <Link to="/dashboard" state={{ demoMode: isDemo }} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Dashboard
               </Link>
             )}
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            {!loading && (
+            
+            {isDemo && (
+              <div className="flex items-center">
+                <span className="text-xs text-orange-500 font-medium mr-2 bg-orange-100 dark:bg-orange-900/30 px-2 py-1 rounded-md">
+                  Demo Mode
+                </span>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => navigate("/auth", { state: { mode: "signUp" } })}
+                >
+                  Sign Up
+                </Button>
+              </div>
+            )}
+            
+            {!loading && !isDemo && (
               <>
                 {user ? (
                   <div className="flex items-center gap-4">
@@ -92,7 +110,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </div>
                 ) : (
                   <Button onClick={() => navigate("/auth")} size="sm">
-                    Sign In
+                    Sign In / Sign Up
                   </Button>
                 )}
               </>
@@ -100,7 +118,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       </header>
-      <main className="container mx-auto px-4 py-6">{children}</main>
+      <main className="container mx-auto px-4 py-6">
+        {isDemo && (
+          <div className="mb-4 p-3 bg-orange-50 dark:bg-orange-950/30 rounded-lg border border-orange-200 dark:border-orange-900/50">
+            <p className="text-orange-700 dark:text-orange-300 text-sm flex items-center">
+              <LayoutDashboard className="h-4 w-4 mr-2" />
+              <span>
+                <strong>Demo Mode:</strong> You can explore all features, but data won't be saved when you leave.
+              </span>
+            </p>
+          </div>
+        )}
+        {children}
+      </main>
     </div>
   );
 };
