@@ -1,6 +1,6 @@
 
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "@/components/landing/Header";
 import Hero from "@/components/landing/Hero";
 import Features from "@/components/landing/Features";
@@ -14,13 +14,14 @@ import { useAuth } from "@/context/AuthContext";
 const Landing = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   
-  // Redirect authenticated users to dashboard
+  // Only redirect authenticated users to dashboard if they're not accessing demo mode
   useEffect(() => {
-    if (user && !loading) {
+    if (user && !loading && !location.state?.demoMode) {
       navigate("/dashboard");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, location.state]);
   
   // Show loading state while checking authentication
   if (loading) {
