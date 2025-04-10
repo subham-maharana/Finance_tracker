@@ -61,9 +61,9 @@ const Hero = () => {
           </div>
         </div>
         <div className="glass-card rounded-xl shadow-lg p-8 animate-fade-in">
-          <div className="aspect-video bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="aspect-video bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
             <img 
-              src="/placeholder.svg" 
+              src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1000" 
               alt="Expense Tracker Dashboard" 
               className="w-full h-full object-cover"
             />
