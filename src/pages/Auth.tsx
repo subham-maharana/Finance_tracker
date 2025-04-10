@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import AuthCard from "@/components/auth/AuthCard";
 import { AuthMode } from "@/components/auth/types";
 
-type LocationState = { mode?: AuthMode } | null;
+type LocationState = { mode?: AuthMode; demoMode?: boolean } | null;
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -15,12 +15,15 @@ const Auth = () => {
   const locationState = location.state as LocationState;
   const [mode, setMode] = useState<AuthMode>(locationState?.mode || "signIn");
   
-  // Redirect to home if already logged in
+  // Check if we came from demo mode
+  const cameFromDemo = locationState?.demoMode;
+  
+  // Redirect to home if already logged in, but respect demo mode
   useEffect(() => {
-    if (user && !loading) {
+    if (user && !loading && !cameFromDemo) {
       navigate("/");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, cameFromDemo]);
 
   if (loading) {
     return (

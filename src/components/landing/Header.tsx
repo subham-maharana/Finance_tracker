@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogIn, UserPlus, User, LayoutDashboard } from "lucide-react";
+import { LogIn, User, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import {
   DropdownMenu,
@@ -24,6 +24,7 @@ const Header = () => {
   };
 
   const handleDemo = () => {
+    // Navigate directly to dashboard with demoMode state flag
     navigate("/dashboard", { state: { demoMode: true } });
   };
 

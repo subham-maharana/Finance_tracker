@@ -10,6 +10,11 @@ const Hero = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const handleDemo = () => {
+    // Navigate directly to dashboard with demoMode state flag
+    navigate("/dashboard", { state: { demoMode: true } });
+  };
+
   return (
     <section className="container mx-auto px-4 py-16 md:py-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -47,7 +52,7 @@ const Hero = () => {
                   variant="outline" 
                   size="lg"
                   className="hover-scale"
-                  onClick={() => navigate("/dashboard", { state: { demoMode: true } })}
+                  onClick={handleDemo}
                 >
                   Try Demo
                   <Play className="ml-2 h-4 w-4" />
