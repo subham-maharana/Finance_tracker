@@ -24,6 +24,7 @@ const Header = () => {
   };
 
   const handleDemo = () => {
+    console.log("Demo button clicked");
     // Navigate directly to dashboard with demoMode state flag
     navigate("/dashboard", { state: { demoMode: true } });
   };

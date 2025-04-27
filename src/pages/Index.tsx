@@ -11,7 +11,7 @@ import AddExpenseModal from "@/components/AddExpenseModal";
 import { Expense, ExpenseFormData } from "@/types/expense";
 import { useExpenseSync } from "@/hooks/useExpenseSync";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Index = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -19,18 +19,51 @@ const Index = () => {
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if we're in demo mode
+  const isDemo = location.state?.demoMode === true;
   
   // Use the expense sync hook
   const { addExpense, updateExpense, deleteExpense } = useExpenseSync(expenses, setExpenses);
   
-  // Redirect to auth page if not logged in
+  // Redirect to auth page if not logged in and not in demo mode
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && !isDemo) {
       navigate("/auth");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, isDemo]);
 
   const handleAddExpense = async (data: ExpenseFormData) => {
+    // In demo mode, use local state only
+    if (isDemo) {
+      if (editingExpense) {
+        // Update existing demo expense
+        const updatedExpense = {
+          ...editingExpense,
+          ...data,
+        };
+        
+        const updatedExpenses = expenses.map((expense) =>
+          expense.id === editingExpense.id ? updatedExpense : expense
+        );
+        setExpenses(updatedExpenses);
+        toast.success("Demo: Expense updated");
+      } else {
+        // Add new demo expense
+        const newExpense: Expense = {
+          id: uuidv4(),
+          ...data,
+        };
+        setExpenses([...expenses, newExpense]);
+        toast.success("Demo: Expense added");
+      }
+      setEditingExpense(null);
+      setIsAddModalOpen(false);
+      return;
+    }
+
+    // Normal mode - use database
     if (editingExpense) {
       // Update existing expense
       const updatedExpense = {
@@ -70,6 +103,14 @@ const Index = () => {
   };
 
   const handleDeleteExpense = async (id: string) => {
+    if (isDemo) {
+      // Demo mode - just update local state
+      setExpenses(expenses.filter((expense) => expense.id !== id));
+      toast.success("Demo: Expense deleted");
+      return;
+    }
+    
+    // Normal mode - use database
     const success = await deleteExpense(id);
     
     if (success) {
@@ -78,7 +119,7 @@ const Index = () => {
     }
   };
 
-  if (loading) {
+  if (loading && !isDemo) {
     return (
       <Layout>
         <div className="flex justify-center items-center h-64">
